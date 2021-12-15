@@ -11,7 +11,7 @@ model <- model_board |>
   pin_read("james/simple-glm-fit")
 
 # Read in indication data
-indication <- readr::read_csv("data/comm_auto_sample_indication.csv")
+indication <- readr::read_csv("indication.csv")
 
 # Helper functions
 to_dbl <- function(dollar_string) {
