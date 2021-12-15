@@ -77,7 +77,8 @@ function(req, res) {
     )
   
   out_data |> 
-    select(.out)
+    select(.out) |> 
+    unlist()
 }
 
 #* @plumber
