@@ -1,0 +1,71 @@
+---
+title: "EDA"
+output: html_notebook
+---
+
+```{r setup}
+# Packages ----
+library(tidyverse)
+library(skimr)
+```
+
+```{r data}
+sample_data <- read_csv("data/comm_auto_sample_data.csv")
+indication <- read_csv("data/comm_auto_sample_indication.csv")
+request_data <- read_csv("data/comm_auto_sample_request_data.csv")
+```
+
+```{r}
+glimpse(sample_data)
+```
+
+```{r}
+glimpse(indication)
+```
+
+```{r}
+glimpse(request_data)
+```
+
+Combine indication and sample data and derive target:
+```{r}
+model_data <- sample_data |> 
+  left_join(indication, by = c("coverage_type" = "coverage", "risk_state")) |> 
+  mutate(manual_loss_ratio = incurred_loss_and_alae / experience_rated_manual_premium)
+```
+
+Check dimensions:
+```{r}
+dim(sample_data)
+dim(model_data)
+```
+
+Briefly explore model data
+```{r}
+skim(model_data)
+```
+
+
+Split data for training
+```{r}
+model_data |> 
+  count(split)
+```
+
+```{r}
+train_data <- model_data |> 
+  filter(split == "Training")
+
+holdout_data <- model_data |> 
+  filter(split == "Holdout")
+```
+
+Write train and holdout data to disk
+```{r}
+write_csv(train_data, "data/train_data.csv")
+write_csv(holdout_data, "data/holdout_data.csv")
+```
+
+
+
+

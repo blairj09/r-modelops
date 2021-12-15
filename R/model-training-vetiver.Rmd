@@ -1,0 +1,88 @@
+---
+title: "Model Training"
+output: html_notebook
+---
+
+```{r setup}
+# Packages ----
+library(tidymodels)
+library(readr)
+library(vetiver)
+library(pins)
+```
+
+```{r data}
+train_data <- read_csv("data/train_data.csv")
+holdout_data <- read_csv("data/holdout_data.csv")
+```
+
+## Preprocessing
+```{r}
+rec <- train_data |> 
+  recipe(manual_loss_ratio ~ pol_eff_year + risk_state + n_power_units + prior_claim_freq_3yr + easi_snowfall + dnb_credit_score, data = train_data) |> 
+  step_impute_linear(dnb_credit_score, easi_snowfall, prior_claim_freq_3yr, impute_with = imp_vars(n_power_units, pol_eff_year)) |> 
+  step_dummy(risk_state)
+```
+
+
+## Model Training
+```{r}
+spec <- linear_reg()
+
+fit <- workflow(rec, spec) |> 
+  fit(train_data)
+```
+## Model Verification
+```{r}
+evaluation_data <- holdout_data |> 
+  bind_cols(predict(fit, holdout_data)) |> 
+  mutate(diff = .pred - manual_loss_ratio)
+  
+metrics(evaluation_data, truth = "manual_loss_ratio", estimate = ".pred")
+```
+
+```{r}
+evaluation_data |> 
+  ggplot(aes(x = manual_loss_ratio, y = .pred)) +
+  geom_point() +
+  theme_minimal()
+```
+
+```{r}
+evaluation_data |> 
+  mutate(diff = .pred - manual_loss_ratio) |> 
+  arrange(desc(abs(diff))) |> 
+  head(10)
+```
+
+```{r}
+evaluation_data |>
+  ggplot(aes(x = diff)) +
+  geom_histogram() +
+  theme_minimal()
+```
+
+
+
+## Model Deployment
+Create a vetiver model from the fit object
+```{r}
+(v <- vetiver_model(fit, "lm_fit"))
+```
+
+Now we pin the model
+```{r}
+model_board <- board_rsconnect()
+model_board |> 
+  vetiver_pin_write(v)
+```
+
+Create API definition
+```{r}
+vetiver_write_plumber(model_board, "lm_fit")
+```
+
+```{r}
+vetiver_deploy_rsconnect(model_board, "james/lm_fit")
+```
+

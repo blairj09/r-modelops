@@ -1,0 +1,80 @@
+openapi: 3.0.3
+info:
+  description: Simple GLM model deployment example
+  title: GLM Model
+  version: 1.0.0
+paths:
+  /health-check:
+    get:
+      summary: ''
+      responses:
+        '200':
+          description: OK
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: string
+        default:
+          description: Default response.
+      parameters: []
+  /predict:
+    post:
+      summary: Generate predicted outcomes
+      responses:
+        '200':
+          description: OK
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: string
+        default:
+          description: Default response.
+      parameters: []
+      requestBody:
+        description: Model Input Data
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                incurred_loss_and_alae:
+                  type: number
+                  title: "Incurred losses plus Allocated Loss Adjustment Expenses"
+                  example: 10000
+                coverage_type:
+                  type: string
+                  title: "Coverage type"
+                  example: "Physical Damage"
+                manual_premium:
+                  type: number
+                  title: "Experience rated manual premium"
+                  example: 10000
+                pol_eff_year:
+                  type: number
+                  title: "Year the policy was effective"
+                  example: 2020
+                risk_state:
+                  type: string
+                  title: "Policy state"
+                  example: "AL"
+                exposure:
+                  type: number
+                  title: "Number of vehicles that have an engine"
+                  example: 1
+                prior_claim_freq_3yr:
+                  type: number
+                  title: "Claim frequency within the prior three years"
+                  example: 0.03
+                easi_snowfall:
+                  type: number
+                  title: "EASI Annual Snowfall"
+                  example: 43
+                dnb_credit_score:
+                  type: number
+                  title: "Dun & Bradstreet Credit Score"
+                  example: 1

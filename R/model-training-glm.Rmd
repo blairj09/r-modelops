@@ -1,0 +1,113 @@
+---
+title: "Model Training"
+output: html_notebook
+---
+
+```{r setup}
+# Packages ----
+library(tidymodels)
+library(readr)
+library(pins)
+```
+
+```{r data}
+train_data <- read_csv("data/train_data.csv")
+holdout_data <- read_csv("data/holdout_data.csv")
+```
+
+## Preprocessing
+Filter only to fields needed for model training
+```{r}
+train_data <- train_data |> 
+  select(
+    manual_loss_ratio,
+    pol_eff_year,
+    risk_state,
+    n_power_units,
+    prior_claim_freq_3yr,
+    easi_snowfall,
+    dnb_credit_score,
+    experience_rated_manual_premium
+  )
+```
+
+Impute missing values and dummy encode state
+```{r}
+rec <- train_data |> 
+  select(-experience_rated_manual_premium) |> 
+  recipe(manual_loss_ratio ~ ., data = train_data) |> 
+  step_impute_linear(dnb_credit_score, easi_snowfall, prior_claim_freq_3yr, impute_with = imp_vars(n_power_units, pol_eff_year)) |> 
+  step_dummy(risk_state, keep_original_cols = TRUE)
+
+trained_rec <- prep(rec)
+
+train_data <- bake(trained_rec, train_data)
+holdout_data <- bake(trained_rec, holdout_data)
+```
+
+
+## Model Training
+```{r}
+fit <- glm(manual_loss_ratio ~ ., 
+           data = select(train_data, -experience_rated_manual_premium), 
+           family = statmod::tweedie(link.power = 0),
+           weights = train_data$experience_rated_manual_premium)
+```
+## Model Verification
+```{r}
+evaluation_data <- holdout_data |> 
+  bind_cols(.pred = predict(fit, holdout_data)) |> 
+  mutate(diff = .pred - manual_loss_ratio)
+  
+metrics(evaluation_data, truth = "manual_loss_ratio", estimate = ".pred")
+```
+
+```{r}
+evaluation_data |> 
+  ggplot(aes(x = manual_loss_ratio, y = .pred)) +
+  geom_point() +
+  theme_minimal()
+```
+
+```{r}
+evaluation_data |> 
+  mutate(diff = .pred - manual_loss_ratio) |> 
+  arrange(desc(abs(diff))) |> 
+  head(10)
+```
+
+```{r}
+evaluation_data |>
+  ggplot(aes(x = diff)) +
+  geom_histogram() +
+  theme_minimal()
+```
+
+
+
+## Model Deployment
+Create a model object with associated metadata
+```{r}
+model <- list(
+  model = fit,
+  recipe = trained_rec,
+  description = "Discretionary Pricing Guidance Model",
+  train_date = Sys.Date()
+)
+```
+
+
+Store the model object as a pin
+```{r}
+model_board <- board_rsconnect()
+model_board |> 
+  pin_write(
+    model, 
+    name = "simple-glm-fit", 
+    description = "GLM Model Fit", 
+    type = "rds",
+    versioned = TRUE
+  )
+```
+
+Now to fully deploy the model we need to create a Plumber API
