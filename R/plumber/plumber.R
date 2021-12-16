@@ -29,7 +29,7 @@ convert_empty <- function(string) {
   }
 }
 
-#* @apiTitle GLM Model
+#* @apiTitle Discretionary Pricing Tool
 #* @apiDescription Simple GLM model deployment example
 
 #* @get /health-check
@@ -41,8 +41,9 @@ function() {
 }
 
 #* Generate predicted outcomes
+#* @param claim_detail Description of claim details
 #* @post /predict
-function(req, res) {
+function(claim_detail, req, res) {
   # browser()
   new_data <- req$body |> 
     as_tibble() |> 
@@ -95,7 +96,7 @@ function(req, res) {
 function(pr) {
   pr |> 
     pr_set_api_spec("openapi.yaml") |>
-    pr_set_docs("rapidoc") |> 
+    pr_set_docs("rapidoc") |>
     pr_hooks(
       list(
         preroute = function() {
