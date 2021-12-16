@@ -1111,6 +1111,35 @@
         "Built": "R 4.1.1; ; 2021-10-07 17:35:06 UTC; unix"
       }
     },
+    "logger": {
+      "Source": "RSPM",
+      "Repository": "https://colorado.rstudio.com/rspm/all/__linux__/bionic/2021-11-12+MTc6NTg4NzczOSwxMDo1MzA5LDk6NTk2NTg0NTsyNENERDc2OQ",
+      "description": {
+        "Type": "Package",
+        "Package": "logger",
+        "Authors@R": "c(\n    person(\"Gergely\", \"Daróczi\", , \"daroczig@rapporter.net\", role = c(\"aut\", \"cre\"), comment = c(ORCID = \"0000-0003-3149-8537\")),\n    person(\"System1\", role = c(\"fnd\"))\n    )",
+        "Title": "A Lightweight, Modern and Flexible Logging Utility",
+        "Description": "Inspired by the the 'futile.logger' R package and 'logging' Python module, this utility provides a flexible and extensible way of formatting and delivering log messages with low overhead.",
+        "Version": "0.2.2",
+        "Date": "2021-10-10",
+        "URL": "https://daroczig.github.io/logger/",
+        "BugReports": "https://github.com/daroczig/logger/issues",
+        "Encoding": "UTF-8",
+        "RoxygenNote": "7.1.1",
+        "License": "AGPL-3",
+        "Imports": "utils",
+        "Suggests": "glue, pander, jsonlite, crayon, slackr (>= 1.4.1),\nRPushbullet, telegram, testthat, covr, knitr, rmarkdown,\ndevtools, roxygen2, parallel, rsyslog, shiny, callr, txtq,\nbotor, R.utils, syslognet",
+        "Enhances": "logging, futile.logger, log4r",
+        "VignetteBuilder": "knitr",
+        "NeedsCompilation": "no",
+        "Packaged": "2021-10-18 21:25:57 UTC; daroczig",
+        "Author": "Gergely Daróczi [aut, cre] (<https://orcid.org/0000-0003-3149-8537>),\n  System1 [fnd]",
+        "Maintainer": "Gergely Daróczi <daroczig@rapporter.net>",
+        "Repository": "RSPM",
+        "Date/Publication": "2021-10-19 05:30:08 UTC",
+        "Built": "R 4.1.0; ; 2021-10-20 16:56:48 UTC; unix"
+      }
+    },
     "lubridate": {
       "Source": "RSPM",
       "Repository": "https://colorado.rstudio.com/rspm/all/__linux__/bionic/2021-11-12+MTc6NTg4NzczOSwxMDo1MzA5LDk6NTk2NTg0NTsyNENERDc2OQ",
@@ -1938,6 +1967,28 @@
         "Built": "R 4.1.0; x86_64-pc-linux-gnu; 2021-10-01 15:28:34 UTC; unix"
       }
     },
+    "tictoc": {
+      "Source": "RSPM",
+      "Repository": "https://colorado.rstudio.com/rspm/all/__linux__/bionic/2021-11-12+MTc6NTg4NzczOSwxMDo1MzA5LDk6NTk2NTg0NTsyNENERDc2OQ",
+      "description": {
+        "Package": "tictoc",
+        "Title": "Functions for Timing R Scripts, as Well as Implementations of\nStack and List Structures",
+        "Version": "1.0.1",
+        "Author": "Sergei Izrailev",
+        "Maintainer": "Sergei Izrailev <sizrailev@collective.com>",
+        "Description": "Provides the timing functions 'tic' and 'toc' that\n    can be nested. One can record all timings while a complex script is\n    running, and examine the values later. It is also possible to instrument\n    the timing calls with custom callbacks. In addition, this package provides\n    class 'Stack', implemented as a vector, and class 'List', implemented as a\n    list, both of which support operations 'push', 'pop', 'first', 'last' and\n    'clear'.",
+        "URL": "https://github.com/collectivemedia/tictoc",
+        "Depends": "R (>= 3.0.3), methods",
+        "License": "Apache License (== 2.0) | file LICENSE",
+        "Copyright": "Copyright (C) Collective, Inc. | file inst/COPYRIGHTS",
+        "Packaged": "2021-04-18 16:26:11 UTC; hornik",
+        "NeedsCompilation": "no",
+        "Repository": "RSPM",
+        "Date/Publication": "2021-04-19 07:09:18 UTC",
+        "Encoding": "UTF-8",
+        "Built": "R 4.1.0; ; 2021-05-19 01:07:54 UTC; unix"
+      }
+    },
     "tidyr": {
       "Source": "RSPM",
       "Repository": "https://colorado.rstudio.com/rspm/all/__linux__/bionic/2021-11-12+MTc6NTg4NzczOSwxMDo1MzA5LDk6NTk2NTg0NTsyNENERDc2OQ",
@@ -2273,7 +2324,7 @@
       "checksum": "ff10d931b78a8f185e8bbdb56f0ebba6"
     },
     "plumber.R": {
-      "checksum": "f05afb8573141b49ede5769beb639fdb"
+      "checksum": "92efaf12d38cbe1d211015f15b433c75"
     }
   },
   "users": null
