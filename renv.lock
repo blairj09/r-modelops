@@ -625,6 +625,13 @@
       "Repository": "RSPM",
       "Hash": "3354c874f6008f7f1e418526df8ecd8a"
     },
+    "logger": {
+      "Package": "logger",
+      "Version": "0.2.2",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Hash": "c269b06beb2bbadb0d058c0e6fa4ec3d"
+    },
     "lubridate": {
       "Package": "lubridate",
       "Version": "1.8.0",

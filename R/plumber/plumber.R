@@ -3,6 +3,8 @@ library(pins)
 library(recipes)
 library(rapidoc)
 library(dplyr)
+library(glue)
+library(logger)
 
 # Read in model
 model_board <- board_rsconnect()
@@ -15,8 +17,16 @@ indication <- readr::read_csv("indication.csv")
 
 # Helper functions
 to_dbl <- function(dollar_string) {
-  stringr::str_replace_all(dollar_string, "\\$|,", "") |> 
+  stringr::str_replace_all(dollar_string, "\\$|,", "") |>
     as.numeric()
+}
+
+convert_empty <- function(string) {
+  if (string == "") {
+    "-"
+  } else {
+    string
+  }
 }
 
 #* @apiTitle GLM Model
@@ -85,5 +95,18 @@ function(req, res) {
 function(pr) {
   pr |> 
     pr_set_api_spec("openapi.yaml") |>
-    pr_set_docs("rapidoc")
+    pr_set_docs("rapidoc") |> 
+    pr_hooks(
+      list(
+        preroute = function() {
+          # Start timer for log info
+          tictoc::tic()
+        },
+        postroute = function(req, res) {
+          end <- tictoc::toc(quiet = TRUE)
+          # Log details about the request and the response
+          log_info('{convert_empty(req$REMOTE_ADDR)} "{convert_empty(req$HTTP_USER_AGENT)}" {convert_empty(req$HTTP_HOST)} {convert_empty(req$REQUEST_METHOD)} {convert_empty(req$PATH_INFO)} {convert_empty(res$status)} {round(end$toc - end$tic, digits = getOption("digits", 5))}')
+        }
+      )
+    )
 }
